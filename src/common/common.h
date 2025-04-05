@@ -32,7 +32,7 @@ struct Point {
 	int y = 0;
 };
 
-constexpr Size		   WINDOW_SIZE = {500, 500};
+constexpr Size         WINDOW_SIZE = {1000, 800};
 inline constexpr float FRAME_TIME  = 1 / 60.0; // 每秒里每帧的耗时
 
 #endif // COMMON_H

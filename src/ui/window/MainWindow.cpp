@@ -52,6 +52,11 @@ void* MainWindow::GetSurfaceHandle() const {
 	return reinterpret_cast<void*>(m_pSurface->winId());
 }
 
+Size MainWindow::GetSurfaceSize() const {
+	const auto size = m_pSurface->size() * m_pSurface->devicePixelRatio();
+	return {static_cast<uint32_t>(size.width()), static_cast<uint32_t>(size.height())};
+}
+
 void MainWindow::resizeEvent(QResizeEvent* event) {
 	// if(m_timer.isActive()) {
 	// 	const auto size = ui->pSurfaceWidget->size();

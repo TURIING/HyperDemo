@@ -15,9 +15,14 @@ Application::Application() {
 	m_pWindow = new MainWindow("HyperDemo", WINDOW_SIZE, this);
 	m_pWindow->show();
 
-	HyperRender::PlatformSurfaceInfo surfaceInfo{.handle = m_pWindow->GetSurfaceHandle(), .size = {500, 500}};
+	const auto                       size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
+	HyperRender::PlatformSurfaceInfo surfaceInfo{
+		.handle = m_pWindow->GetSurfaceHandle(),
+		.size = size
+	};
 	m_pToolFactory = new HyperRender::ToolFactory(surfaceInfo);
 	m_pScreenTool  = m_pToolFactory->CreateScreenTool();
+	m_pScreenTool->Begin({{0, 0, size.width, size.height}});
 }
 
 void Application::Run() const {

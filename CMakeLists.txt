@@ -16,7 +16,6 @@ endif ()
 
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
-add_subdirectory(external/HyperGpu)
 add_subdirectory(external/HyperRender)
 
 file(GLOB_RECURSE SOURCE CONFIGURE_DEPENDS src/*.cpp src/*.h)

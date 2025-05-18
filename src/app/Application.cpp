@@ -15,14 +15,26 @@ Application::Application() {
 	m_pWindow = new MainWindow("HyperDemo", WINDOW_SIZE, this);
 	m_pWindow->show();
 
-	const auto                       size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
-	HyperRender::PlatformSurfaceInfo surfaceInfo{
+	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
+
+	m_pToolFactory = new HyperRender::ToolFactory();
+	m_pScreenTool  = m_pToolFactory->CreateScreenTool();
+//	m_pEffectTool = m_pToolFactory->CreateEffectTool();
+
+	HyperRender::PlatformWindowInfo surfaceInfo{
 		.handle = m_pWindow->GetSurfaceHandle(),
 		.size = size
 	};
-	m_pToolFactory = new HyperRender::ToolFactory(surfaceInfo);
-	m_pScreenTool  = m_pToolFactory->CreateScreenTool();
-	m_pScreenTool->Begin({{0, 0, size.width, size.height}});
+	m_pScreenTarget = m_pScreenTool->CreateScreen(surfaceInfo);
+	m_pScreenTool->SetScreenTarget(m_pScreenTarget);
+	//    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, size.width, size.height});
+	//    m_pScreenTool->ClearColor(m_pScreenUnit, {1.0, 0.0, 0.0, 1.0});
+	//
+	//    IDrawUnit *unit = m_pScreenTool->CreateDrawUnit({100, 100, 500, 500});
+	//    m_pScreenTool->ClearColor(unit, {0.0, 0.0, 1.0, 1.0});
+	//    m_pEffectTool->Begin({unit, unit->GetArea()});
+	//    m_pEffectTool->End(bgUnit);
+	//    m_pScreenTool->Begin({bgUnit, bgUnit->GetArea()});
 }
 
 void Application::Run() const {
@@ -40,7 +52,9 @@ void Application::ProcessEvent(Event &event) {
 }
 
 void Application::renderEvent(RenderRequestEvent &event) const {
-	m_pScreenTool->Draw();
+	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
+	m_pScreenTool->BeginRenderToScreen({0, 0, size.width, size.height});
+	m_pScreenTool->EndRenderToScreen();
 }
 
 void Application::resizeEvent(const WindowResizeEvent &event) const {

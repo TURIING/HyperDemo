@@ -23,7 +23,9 @@ MainWindow::MainWindow(const std::string& title, const Size& size, Application* 
 	connect(&m_timer, &QTimer::timeout, [this] {
 		RenderRequestEvent renderRequestEvent;
 		m_pApp->ProcessEvent(renderRequestEvent);
+#if defined(PLATFORM_MACOS) && defined(GRAPHICS_VULKAN)
 		this->repaint();
+#endif
 	});
 }
 
@@ -34,7 +36,7 @@ MainWindow::~MainWindow() {
 void MainWindow::createSurfaceWindow() {
 	m_pSurface = new QWindow();
 
-#if PLATFORM_MACOS
+#if defined(PLATFORM_MACOS) && defined(GRAPHICS_VULKAN)
 	m_pSurface->setSurfaceType(QSurface::VulkanSurface);
 #endif
 	const auto surfaceWidget = this->createWindowContainer(m_pSurface, this);

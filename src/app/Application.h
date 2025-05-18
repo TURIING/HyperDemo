@@ -8,7 +8,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "IScreenTool.h"
+#include "HyperRender.h"
 #include "ToolFactory.h"
 #include "UIEvent.h"
 
@@ -29,9 +29,12 @@ private:
 	void mouseWheelScrollEvent(const MouseWheelScrollEvent &event) const;
 
 private:
-	MainWindow				 *m_pWindow		 = nullptr;
-	HyperRender::ToolFactory *m_pToolFactory = nullptr;
-	HyperRender::IScreenTool *m_pScreenTool	 = nullptr;
+    MainWindow *m_pWindow = nullptr;
+    HyperRender::ToolFactory *m_pToolFactory = nullptr;
+    HyperRender::IScreenTool *m_pScreenTool = nullptr;
+    HyperRender::IEffectTool *m_pEffectTool = nullptr;
+    HyperRender::IScreenTarget *m_pScreenTarget = nullptr;
+    HyperRender::IDrawUnit *m_pScreenUnit = nullptr;
 };
 
 #endif // APPLICATION_H

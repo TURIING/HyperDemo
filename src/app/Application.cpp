@@ -17,7 +17,12 @@ Application::Application() {
 
 	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
 
-	m_pToolFactory = new HyperRender::ToolFactory();
+#if GRAPHICS_OPENGL
+	m_pToolFactory = new HyperRender::ToolFactory(HyperRender::GpuType::OPENGL);
+#elif GRAPHICS_VULKAN
+	m_pToolFactory = new HyperRender::ToolFactory(HyperRender::GpuType::VULKAN);
+#endif
+
 	m_pScreenTool  = m_pToolFactory->CreateScreenTool();
 //	m_pEffectTool = m_pToolFactory->CreateEffectTool();
 
@@ -35,10 +40,6 @@ Application::Application() {
 	//    m_pEffectTool->Begin({unit, unit->GetArea()});
 	//    m_pEffectTool->End(bgUnit);
 	//    m_pScreenTool->Begin({bgUnit, bgUnit->GetArea()});
-}
-
-void Application::Run() const {
-	m_pWindow->Update();
 }
 
 void Application::ProcessEvent(Event &event) {

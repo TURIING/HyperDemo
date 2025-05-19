@@ -18,15 +18,6 @@ MainWindow::MainWindow(const std::string& title, const Size& size, Application* 
 	ui->setupUi(this);
 	this->resize(size.width, size.height);
 	this->createSurfaceWindow();
-
-	m_timer.setInterval(FRAME_TIME * 1000);
-	connect(&m_timer, &QTimer::timeout, [this] {
-		RenderRequestEvent renderRequestEvent;
-		m_pApp->ProcessEvent(renderRequestEvent);
-#if defined(PLATFORM_MACOS) && defined(GRAPHICS_VULKAN)
-		this->repaint();
-#endif
-	});
 }
 
 MainWindow::~MainWindow() {
@@ -35,7 +26,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::createSurfaceWindow() {
 	m_pSurface = new QWindow();
-
+	m_pSurface->installEventFilter(this);
 #if defined(PLATFORM_MACOS) && defined(GRAPHICS_VULKAN)
 	m_pSurface->setSurfaceType(QSurface::VulkanSurface);
 #endif
@@ -44,10 +35,6 @@ void MainWindow::createSurfaceWindow() {
 	const auto layout = new QHBoxLayout(this);
 	layout->setContentsMargins(QMargins());
 	layout->addWidget(surfaceWidget);
-}
-
-void MainWindow::Update() {
-	m_timer.start();
 }
 
 void* MainWindow::GetSurfaceHandle() const {
@@ -75,12 +62,15 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 
 bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
 	if(watched == m_pSurface) {
+		RenderRequestEvent renderRequestEvent;
+		renderRequestEvent.SetFunc([&]{ this->repaint(); });
 		switch(event->type()) {
 		case QEvent::MouseButtonPress: {
 			const auto		_event = dynamic_cast<QMouseEvent*>(event);
 			const auto		pos	   = _event->pos();
 			MousePressEvent mousePressEvent(static_cast<MouseButton>(_event->button()), {pos.x(), pos.y()});
 			m_pApp->ProcessEvent(mousePressEvent);
+			m_pApp->ProcessEvent(renderRequestEvent);
 			break;
 		}
 		case QEvent::MouseButtonRelease: {
@@ -110,6 +100,7 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
 			const auto			  delta	 = _event->angleDelta().y() * 0.05;
 			MouseWheelScrollEvent mouseWheelScrollEvent(delta);
 			m_pApp->ProcessEvent(mouseWheelScrollEvent);
+			m_pApp->ProcessEvent(renderRequestEvent);
 			break;
 		}
 		default:

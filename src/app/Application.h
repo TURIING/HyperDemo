@@ -17,7 +17,6 @@ class MainWindow;
 class Application {
 public:
 		 Application();
-	void Run() const;
 	void ProcessEvent(Event &event);
 
 private:

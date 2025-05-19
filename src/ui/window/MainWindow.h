@@ -28,7 +28,6 @@ class MainWindow : public QWidget {
 public:
 	explicit			MainWindow(const std::string& title, const Size& size, Application* app, QWidget* parent = nullptr);
 	~					MainWindow() override;
-	void                Update();
 	[[nodiscard]] void* GetSurfaceHandle() const;
 	[[nodiscard]] Size  GetSurfaceSize() const;
 
@@ -37,7 +36,6 @@ protected:
 	bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
-	// inline void init(const std::string &title, const Size &size);
 	inline void createSurfaceWindow();
 
 private:

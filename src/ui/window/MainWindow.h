@@ -9,7 +9,6 @@
 #define MAINWINDOW_H
 
 #include "../../common/common.h"
-#include <QTimer>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -21,6 +20,7 @@ class MainWindow;
 QT_END_NAMESPACE
 
 class Application;
+class CanvasWidget;
 
 class MainWindow : public QWidget {
 	Q_OBJECT
@@ -36,13 +36,8 @@ protected:
 	bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
-	inline void createSurfaceWindow();
-
-private:
 	Ui::MainWindow* ui;
-	QTimer			m_timer;
-	Application*	m_pApp	   = nullptr;
-	QWindow*		m_pSurface = nullptr;
+	Application* m_pApp	= nullptr;
 };
 
 #endif // MAINWINDOW_H

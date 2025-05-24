@@ -16,7 +16,7 @@ Application::Application() {
 	m_pWindow->show();
 
 	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
-
+    LOG_INFO("{},{}", size.width, size.height);
 #if GRAPHICS_OPENGL
 	m_pToolFactory = new HyperRender::ToolFactory(HyperRender::GpuType::OPENGL);
 #elif GRAPHICS_VULKAN
@@ -32,6 +32,7 @@ Application::Application() {
 	};
 	m_pScreenTarget = m_pScreenTool->CreateScreen(surfaceInfo);
 	m_pScreenTool->SetScreenTarget(m_pScreenTarget);
+
 	//    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, size.width, size.height});
 	//    m_pScreenTool->ClearColor(m_pScreenUnit, {1.0, 0.0, 0.0, 1.0});
 	//

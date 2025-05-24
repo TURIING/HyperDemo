@@ -10,40 +10,40 @@
 #include "MainWindow.h"
 #include "../../app/Application.h"
 #include "ui_MainWindow.h"
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QWindow>
 
+#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
+#include "CanvasWidget.h"
+#endif
+
 MainWindow::MainWindow(const std::string& title, const Size& size, Application* app, QWidget* parent) : QWidget(parent), ui(new Ui::MainWindow), m_pApp(app) {
 	ui->setupUi(this);
+    this->setWindowTitle(QString::fromStdString(title));
 	this->resize(size.width, size.height);
-	this->createSurfaceWindow();
+    ui->surfaceWidget->installEventFilter(this);
 }
 
 MainWindow::~MainWindow() {
 	delete ui;
 }
 
-void MainWindow::createSurfaceWindow() {
-	m_pSurface = new QWindow();
-	m_pSurface->installEventFilter(this);
-#if defined(PLATFORM_MACOS) && defined(GRAPHICS_VULKAN)
-	m_pSurface->setSurfaceType(QSurface::VulkanSurface);
-#endif
-	const auto surfaceWidget = this->createWindowContainer(m_pSurface, this);
-
-	const auto layout = new QHBoxLayout(this);
-	layout->setContentsMargins(QMargins());
-	layout->addWidget(surfaceWidget);
-}
-
 void* MainWindow::GetSurfaceHandle() const {
-	return reinterpret_cast<void*>(m_pSurface->winId());
+#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
+    return ui->surfaceWidget->GetHandle();
+#endif
 }
 
 Size MainWindow::GetSurfaceSize() const {
-	const auto size = m_pSurface->size() * m_pSurface->devicePixelRatio();
-	return {static_cast<uint32_t>(size.width()), static_cast<uint32_t>(size.height())};
+#if defined(PLATFORM_IOS)
+    const auto size = ui->surfaceWidget->size();
+#elif defined(PLATFORM_MACOS) && defined(GRAPHICS_VULKAN)
+    const auto size = ui->surfaceWidget->size();
+#elif defined(PLATFORM_MACOS) && defined(GRAPHICS_OPENGL)
+    const auto size = ui->surfaceWidget->size() * devicePixelRatio();
+#endif
+    return {static_cast<uint32_t>(size.width()), static_cast<uint32_t>(size.height())};
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event) {
@@ -61,51 +61,54 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
-	if(watched == m_pSurface) {
-		RenderRequestEvent renderRequestEvent;
-		renderRequestEvent.SetFunc([&]{ this->repaint(); });
-		switch(event->type()) {
-		case QEvent::MouseButtonPress: {
-			const auto		_event = dynamic_cast<QMouseEvent*>(event);
-			const auto		pos	   = _event->pos();
-			MousePressEvent mousePressEvent(static_cast<MouseButton>(_event->button()), {pos.x(), pos.y()});
-			m_pApp->ProcessEvent(mousePressEvent);
-			m_pApp->ProcessEvent(renderRequestEvent);
-			break;
-		}
-		case QEvent::MouseButtonRelease: {
-			const auto		  _event = dynamic_cast<QMouseEvent*>(event);
-			const auto		  pos	 = _event->pos();
-			MouseReleaseEvent mouseReleaseEvent(static_cast<MouseButton>(_event->button()), {pos.x(), pos.y()});
-			m_pApp->ProcessEvent(mouseReleaseEvent);
-			break;
-		}
-		case QEvent::MouseMove: {
-			const auto _event = dynamic_cast<QMouseEvent*>(event);
-			const auto pos	  = _event->pos();
-
-			auto button = MouseButton::None;
-			if(auto btn = _event->buttons(); btn & Qt::RightButton) {
-				button = MouseButton::Right;
-			} else if(btn & Qt::LeftButton) {
-				button = MouseButton::Left;
-			}
-
-			MouseMoveEvent mouseMoveEvent(button, {pos.x(), pos.y()});
-			m_pApp->ProcessEvent(mouseMoveEvent);
-			break;
-		}
-		case QEvent::Wheel: {
-			const auto			  _event = dynamic_cast<QWheelEvent*>(event);
-			const auto			  delta	 = _event->angleDelta().y() * 0.05;
-			MouseWheelScrollEvent mouseWheelScrollEvent(delta);
-			m_pApp->ProcessEvent(mouseWheelScrollEvent);
-			m_pApp->ProcessEvent(renderRequestEvent);
-			break;
-		}
-		default:
-			break;
-		}
-	}
-	return QWidget::eventFilter(watched, event);
+#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
+    if(watched == ui->surfaceWidget) {
+#endif
+        RenderRequestEvent renderRequestEvent;
+        renderRequestEvent.SetFunc([&]{ this->repaint(); });
+        switch(event->type()) {
+            case QEvent::MouseButtonPress: {
+                const auto		_event = dynamic_cast<QMouseEvent*>(event);
+                const auto		pos	   = _event->pos();
+                MousePressEvent mousePressEvent(static_cast<MouseButton>(_event->button()), {pos.x(), pos.y()});
+                m_pApp->ProcessEvent(mousePressEvent);
+                m_pApp->ProcessEvent(renderRequestEvent);
+                break;
+            }
+            case QEvent::MouseButtonRelease: {
+                const auto		  _event = dynamic_cast<QMouseEvent*>(event);
+                const auto		  pos	 = _event->pos();
+                MouseReleaseEvent mouseReleaseEvent(static_cast<MouseButton>(_event->button()), {pos.x(), pos.y()});
+                m_pApp->ProcessEvent(mouseReleaseEvent);
+                break;
+            }
+            case QEvent::MouseMove: {
+                const auto _event = dynamic_cast<QMouseEvent*>(event);
+                const auto pos = _event->pos();
+                
+                auto button = MouseButton::None;
+                if(auto btn = _event->buttons(); btn & Qt::RightButton) {
+                    button = MouseButton::Right;
+                } else if(btn & Qt::LeftButton) {
+                    button = MouseButton::Left;
+                }
+                
+                MouseMoveEvent mouseMoveEvent(button, {pos.x(), pos.y()});
+                m_pApp->ProcessEvent(mouseMoveEvent);
+                break;
+            }
+            case QEvent::Wheel: {
+                const auto _event = dynamic_cast<QWheelEvent*>(event);
+                const auto delta = _event->angleDelta().y() * 0.05;
+                MouseWheelScrollEvent mouseWheelScrollEvent(delta);
+                m_pApp->ProcessEvent(mouseWheelScrollEvent);
+                m_pApp->ProcessEvent(renderRequestEvent);
+                break;
+            }
+            default:
+                break;
+        }
+        
+        return QWidget::eventFilter(watched, event);
+    }
 }

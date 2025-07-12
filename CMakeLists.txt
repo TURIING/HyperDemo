@@ -15,16 +15,16 @@ add_definitions(-DGRAPHICS_VULKAN)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(CMAKE_PREFIX_PATH "C:/Qt/6.8.1/msvc2022_64")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(CMAKE_PREFIX_PATH "/Users/turiing/Qt6.9/6.9.0/macos/lib/cmake")
+    set(CMAKE_PREFIX_PATH "/Users/turiing/Qt/6.6.3/macos/lib/cmake")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
-    set(CMAKE_PREFIX_PATH "/Users/turiing/Qt6.9/6.9.0/ios/")
+    set(CMAKE_PREFIX_PATH "/Users/turiing/Qt/6.6.3/ios/")
 endif ()
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 add_subdirectory(external/HyperRender)
-include_directories(external/HyperRender/include)
+include_directories(external/HyperRender/include src/ui)
 
 file(GLOB_RECURSE SOURCE CONFIGURE_DEPENDS src/*.cpp src/*.h src/*.mm)
 

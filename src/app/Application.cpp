@@ -24,7 +24,7 @@ Application::Application() {
 #endif
 
 	m_pScreenTool  = m_pToolFactory->CreateScreenTool();
-//	m_pEffectTool = m_pToolFactory->CreateEffectTool();
+	m_pEffectTool = m_pToolFactory->CreateEffectTool();
 
 	HyperRender::PlatformWindowInfo surfaceInfo{
 		.handle = m_pWindow->GetSurfaceHandle(),
@@ -32,6 +32,13 @@ Application::Application() {
 	};
 	m_pScreenTarget = m_pScreenTool->CreateScreen(surfaceInfo);
 	m_pScreenTool->SetScreenTarget(m_pScreenTarget);
+
+	QImage image("/Users/turiing/Desktop/demo.png");
+	image = image.convertToFormat(QImage::Format_RGBA8888);
+	auto unit = m_pScreenTool->CreateDrawUnit({{0,0}, {(uint32_t)image.size().width(), (uint32_t)image.size().height()}});
+	// m_pScreenTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes());
+	m_pScreenTool->ClearColor(unit, {1.0, 0, 0, 0.8});
+	m_pScreenTool->AddScreenObject(unit, {{0, 0}, size});
 
 	//    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, size.width, size.height});
 	//    m_pScreenTool->ClearColor(m_pScreenUnit, {1.0, 0.0, 0.0, 1.0});

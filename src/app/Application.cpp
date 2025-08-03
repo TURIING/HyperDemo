@@ -35,10 +35,9 @@ Application::Application() {
 
 	QImage image("/Users/turiing/Desktop/demo.png");
 	image = image.convertToFormat(QImage::Format_RGBA8888);
-	auto unit = m_pScreenTool->CreateDrawUnit({{0,0}, {(uint32_t)image.size().width(), (uint32_t)image.size().height()}});
-	// m_pScreenTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes());
-	m_pScreenTool->ClearColor(unit, {1.0, 0, 0, 0.8});
-	m_pScreenTool->AddScreenObject(unit, {{0, 0}, size});
+	auto unit = m_pScreenTool->CreateDrawUnit({{100,100}, {600, 600}});
+	m_pScreenTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes(), {0, 0});
+	m_pScreenTool->AddScreenObject(unit, unit->GetArea());
 
 	//    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, size.width, size.height});
 	//    m_pScreenTool->ClearColor(m_pScreenUnit, {1.0, 0.0, 0.0, 1.0});
@@ -62,8 +61,9 @@ void Application::ProcessEvent(Event &event) {
 
 void Application::renderEvent(RenderRequestEvent &event) const {
 	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
-	m_pScreenTool->BeginRenderToScreen({0, 0, size.width, size.height});
-	m_pScreenTool->EndRenderToScreen();
+	m_pScreenTool->Begin({0, 0, size.width, size.height});
+	m_pScreenTool->DoRender();
+	m_pScreenTool->End();
 }
 
 void Application::resizeEvent(const WindowResizeEvent &event) const {

@@ -33,11 +33,12 @@ Application::Application() {
 	m_pScreenTarget = m_pScreenTool->CreateScreen(surfaceInfo);
 	m_pScreenTool->SetScreenTarget(m_pScreenTarget);
 
-	QImage image("/Users/turiing/Desktop/demo.png");
+	QImage image("/Users/turiing/Desktop/demo1.png");
 	image = image.convertToFormat(QImage::Format_RGBA8888);
-	auto unit = m_pScreenTool->CreateDrawUnit({{100,100}, {600, 600}});
-	m_pScreenTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes(), {0, 0});
-	m_pScreenTool->AddScreenObject(unit, unit->GetArea());
+	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {(uint32_t)image.width(), (uint32_t)image.height()}});
+	m_pEffectTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes(), {0, 0});
+	// m_pScreenTool->AddScreenObject(unit, unit->GetArea());
+	m_pEffectTool->SetTargetUnit(unit);
 
 	//    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, size.width, size.height});
 	//    m_pScreenTool->ClearColor(m_pScreenUnit, {1.0, 0.0, 0.0, 1.0});
@@ -60,6 +61,15 @@ void Application::ProcessEvent(Event &event) {
 }
 
 void Application::renderEvent(RenderRequestEvent &event) const {
+
+	m_pEffectTool->Begin({});
+	m_pEffectTool->DoDualKawaseBlur(2, {1, 1});
+	m_pEffectTool->End();
+
+	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {1280, 720}});
+	m_pEffectTool->RenderToUnit(unit);
+	m_pScreenTool->AddScreenObject(unit, unit->GetArea());
+
 	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());
 	m_pScreenTool->Begin({0, 0, size.width, size.height});
 	m_pScreenTool->DoRender();

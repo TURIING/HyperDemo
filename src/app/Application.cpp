@@ -64,6 +64,7 @@ void Application::renderEvent(RenderRequestEvent &event) const {
 
 	m_pEffectTool->Begin({});
 	m_pEffectTool->DoDualKawaseBlur(2, {1, 1});
+	// m_pEffectTool->DoGaussianBlur();
 	m_pEffectTool->End();
 
 	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {1280, 720}});

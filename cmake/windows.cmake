@@ -1,6 +1,6 @@
 add_definitions(-DPLATFORM_WINDOWS)
 
-target_link_libraries(${PROJECT_NAME} Qt6::Core Qt6::Gui Qt6::Widgets HyperRender)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets HyperRender)
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)

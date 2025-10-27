@@ -14,9 +14,7 @@
 #include <QMouseEvent>
 #include <QWindow>
 
-#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
 #include "CanvasWidget.h"
-#endif
 
 MainWindow::MainWindow(const std::string& title, const Size& size, Application* app, QWidget* parent) : QWidget(parent), ui(new Ui::MainWindow), m_pApp(app) {
 	ui->setupUi(this);
@@ -30,9 +28,7 @@ MainWindow::~MainWindow() {
 }
 
 void* MainWindow::GetSurfaceHandle() const {
-#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
     return ui->surfaceWidget->GetHandle();
-#endif
 }
 
 Size MainWindow::GetSurfaceSize() const {
@@ -42,6 +38,8 @@ Size MainWindow::GetSurfaceSize() const {
     const auto size = ui->surfaceWidget->size();
 #elif defined(PLATFORM_MACOS) && defined(GRAPHICS_OPENGL)
     const auto size = ui->surfaceWidget->size() * devicePixelRatio();
+#elif defined(PLATFORM_WINDOWS)
+	const auto size = ui->surfaceWidget->size() * devicePixelRatio();
 #endif
     return {static_cast<uint32_t>(size.width()), static_cast<uint32_t>(size.height())};
 }
@@ -61,9 +59,7 @@ void MainWindow::resizeEvent(QResizeEvent* event) {
 }
 
 bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
-#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
     if(watched == ui->surfaceWidget) {
-#endif
         RenderRequestEvent renderRequestEvent;
         renderRequestEvent.SetFunc([&]{ this->repaint(); });
         switch(event->type()) {

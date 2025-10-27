@@ -7,7 +7,6 @@
 ********************************************************************************/
 #ifndef CANVASWIDGET_H
 #define CANVASWIDGET_H
-#if defined(PLATFORM_IOS) || defined(PLATFORM_MACOS)
 
 #include <QWidget>
 #include <QWindow>
@@ -18,11 +17,14 @@ Q_OBJECT
 public:
     explicit CanvasWidget(QWidget *parent = nullptr);
     ~CanvasWidget() override;
-    void* GetHandle();
+    void* GetHandle() const;
+
+#if PLATFORM_WINDOWS
+	[[nodiscard]] QPaintEngine *paintEngine() const override;
+#endif
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
 };
 
-#endif
 #endif //CANVASWIDGET_H

@@ -33,10 +33,10 @@ Application::Application() {
 	m_pScreenTarget = m_pScreenTool->CreateScreen(surfaceInfo);
 	m_pScreenTool->SetScreenTarget(m_pScreenTarget);
 
-	QImage image("C:/Users/TURIING/Desktop/demo.png");
+	QImage image("/Users/turiing/Desktop/demo.png");
 	image = image.convertToFormat(QImage::Format_RGBA8888);
-	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {(uint32_t)image.width(), (uint32_t)image.height()}});
-	m_pEffectTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes(), {0, 0});
+	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {2500, 2500}});
+	// m_pEffectTool->FillDrawUnit(unit, image.constBits(), image.sizeInBytes(), {0, 0});
 	// m_pScreenTool->AddScreenObject(unit, unit->GetArea());
 	m_pEffectTool->SetTargetUnit(unit);
 
@@ -59,16 +59,20 @@ void Application::ProcessEvent(Event &event) {
 	dispatcher.dispatch<MouseReleaseEvent>(std::bind(&Application::mouseReleaseEvent, this, std::placeholders::_1));
 	dispatcher.dispatch<MouseWheelScrollEvent>(std::bind(&Application::mouseWheelScrollEvent, this, std::placeholders::_1));
 }
-
+#include <chrono>
 void Application::renderEvent(RenderRequestEvent &event) const {
-
+	auto t1 = std::chrono::high_resolution_clock::now();
 	m_pEffectTool->Begin({});
 	// m_pEffectTool->DoDualKawaseBlur(2, {1, 1});
-	m_pEffectTool->DoGaussianBlur();
+	// m_pEffectTool->DoGaussianBlur();
+	m_pEffectTool->DoStroke();
 	m_pEffectTool->End();
 
-	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {500, 500}});
-	m_pEffectTool->ClearColor(unit, HyperRender::Color(1, 0, 0, 1));
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto write_ms = duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+	LOG_INFO("dddddddddddddd {}ms", write_ms);
+
+	auto unit = m_pEffectTool->CreateDrawUnit({{100,100}, {2500, 2500}});
 	m_pEffectTool->RenderToUnit(unit);
 	m_pScreenTool->AddScreenObject(unit, unit->GetArea());
 	// m_pEffectTool->SaveDrawUnit(unit, "demo2.png");

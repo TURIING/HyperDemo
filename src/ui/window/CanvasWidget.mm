@@ -111,7 +111,7 @@ CanvasWidget::CanvasWidget(QWidget *parent) :QWidget(parent) {
 CanvasWidget::~CanvasWidget() {
 }
 
-void *CanvasWidget::GetHandle() {
+void *CanvasWidget::GetHandle() const {
 #if defined(PLATFORM_MACOS) && defined(GRAPHICS_OPENGL)
     return gView;
 #else

@@ -12,6 +12,8 @@
 #include <QHBoxLayout>
 #include <QResizeEvent>
 
+#if PLATFORM_WINDOWS
+
 CanvasWidget::CanvasWidget(QWidget *parent) :QWidget(parent) {
 	this->setAttribute(Qt::WA_PaintOnScreen);
 }
@@ -30,3 +32,5 @@ void CanvasWidget::resizeEvent(QResizeEvent* event) {
 QPaintEngine* CanvasWidget::paintEngine() const {
 	return nullptr;
 }
+
+#endif

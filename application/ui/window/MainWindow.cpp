@@ -68,7 +68,6 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
                 const auto		pos	   = _event->pos();
                 MousePressEvent mousePressEvent(static_cast<MouseButton>(_event->button()), {pos.x(), pos.y()});
                 m_pApp->ProcessEvent(mousePressEvent);
-                m_pApp->ProcessEvent(renderRequestEvent);
                 break;
             }
             case QEvent::MouseButtonRelease: {
@@ -98,7 +97,6 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
                 const auto delta = _event->angleDelta().y() * 0.05;
                 MouseWheelScrollEvent mouseWheelScrollEvent(delta);
                 m_pApp->ProcessEvent(mouseWheelScrollEvent);
-                m_pApp->ProcessEvent(renderRequestEvent);
                 break;
             }
             default:

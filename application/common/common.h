@@ -8,7 +8,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include "LogManager.h"
+// #include "LogManager.h"
 #include <functional>
 
 /************************************************* Marco ************************************************************/

@@ -1,3 +1,6 @@
 [submodule "external/HyperRender"]
 	path = external/HyperRender
 	url = https://github.com/TURIING/HyperRender
+[submodule "external/spdlog"]
+	path = external/spdlog
+	url = https://github.com/gabime/spdlog

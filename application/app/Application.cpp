@@ -13,11 +13,11 @@
 #include <QApplication>
 const double MAX_FPS = 60.0;                         // 最大调用次数/秒
 
-Application::Application(int argc, char **argv) {
+Application::Application(int argc, char **argv): m_windowSize(WINDOW_SIZE) {
 	m_pApp = new QApplication(argc, argv);
 	// Singleton<LogManager>::GetInstance()->Init();
 
-	m_pWindow = new MainWindow("HyperDemo", WINDOW_SIZE, this);
+	m_pWindow = new MainWindow("HyperDemo", m_windowSize, this);
 	m_pWindow->show();
 
 	const auto size = std::bit_cast<HyperRender::Size>(m_pWindow->GetSurfaceSize());

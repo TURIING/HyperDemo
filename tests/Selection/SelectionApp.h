@@ -7,9 +7,9 @@
 
 #include "app/Application.h"
 
-class SectionApp: public Application {
+class SelectionApp: public Application {
 public:
-    SectionApp(int argc, char **argv);
+    SelectionApp(int argc, char **argv);
 protected:
     void render() override;
     void mousePressEvent(const MousePressEvent &event) override;
@@ -17,13 +17,10 @@ protected:
     void mouseReleaseEvent(const MouseReleaseEvent &event) override;
 
 private:
-    Point m_oldMousePos;
-    Point m_newMousePos;
-    bool m_isPressed = false;
-    bool m_firstFrame = true;
     HyperRender::IDrawUnit* m_pScreenUnit = nullptr;
-    HyperRender::IEffectTool* m_pEffectTool = nullptr;
-    HyperRender::IDrawUnit* m_pTargetUnit = nullptr;
+    HyperRender::ISelectionTool* m_pSelectionTool = nullptr;
+    Point m_mousePressPos;
+    Point m_mouseMovePos;
 };
 
 #endif //APP_H

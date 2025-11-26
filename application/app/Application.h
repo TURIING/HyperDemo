@@ -11,8 +11,6 @@
 #include "HyperRender.h"
 #include "ToolFactory.h"
 #include "UIEvent.h"
-// #include "ui/window/MainWindow.h"
-// #include <QApplication>
 class MainWindow;
 class QApplication;
 
@@ -44,6 +42,7 @@ protected:
 	HyperRender::IEffectTool *m_pEffectTool = nullptr;
 	HyperRender::IScreenTarget *m_pScreenTarget = nullptr;
 	HyperRender::IDrawUnit *m_pScreenUnit = nullptr;
+	Size m_windowSize;
 
 private:
 	QApplication* m_pApp = nullptr;

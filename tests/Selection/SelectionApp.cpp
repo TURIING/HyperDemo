@@ -6,7 +6,7 @@
 
 SelectionApp::SelectionApp(int argc, char **argv): Application(argc, argv) {
     m_pScreenUnit = m_pScreenTool->CreateDrawUnit({{0, 0}, std::bit_cast<HyperRender::Size>(m_windowSize)});
-    m_pScreenTool->AddScreenObject(m_pScreenUnit, m_pScreenUnit->GetArea());
+    m_pScreenTool->AddScreenObject(m_pScreenUnit);
 
     m_pSelectionTool = m_pToolFactory->CreateSelectionTool();
     m_pSelectionTool->ClearColor(m_pScreenUnit, HyperRender::Color::Black);

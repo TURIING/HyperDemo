@@ -6,8 +6,9 @@
 #include <iostream>
 
 LiquifyApp::LiquifyApp(int argc, char **argv): Application(argc, argv) {
-    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, 600, 600});
-    m_pScreenTool->AddScreenObject(m_pScreenUnit, m_pScreenUnit->GetArea());
+    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({100, 100, 600, 600});
+
+    m_pScreenTool->AddScreenObject(m_pScreenUnit);
 
     m_pEffectTool = m_pToolFactory->CreateEffectTool();
     auto imageInfo = loadImage("/Users/turiing/Desktop/demo.png");

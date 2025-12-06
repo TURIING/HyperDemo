@@ -6,20 +6,25 @@
 #include <iostream>
 
 LiquifyApp::LiquifyApp(int argc, char **argv): Application(argc, argv) {
-    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({100, 100, 600, 600});
+    m_pScreenUnit = m_pScreenTool->CreateDrawUnit({0, 0, 600, 600});
 
     m_pScreenTool->AddScreenObject(m_pScreenUnit);
 
     m_pEffectTool = m_pToolFactory->CreateEffectTool();
+    m_pEffectFactory = m_pEffectTool->CreateEffectFactory();
+    m_pEffect = m_pEffectFactory->CreateLiquifyEffect();
+
     auto imageInfo = loadImage("/Users/turiing/Desktop/demo.png");
     m_pTargetUnit = m_pEffectTool->CreateDrawUnit({0, 0, imageInfo.imageSize.width, imageInfo.imageSize.height});
     m_pEffectTool->FillDrawUnit(m_pTargetUnit, imageInfo.ptr, imageInfo.size, {0, 0});
     m_pEffectTool->SetTargetUnit(m_pTargetUnit);
+    m_pEffectTool->SetEffect(m_pEffect);
 }
 
 void LiquifyApp::render() {
+    m_pEffect->SetLiquifyInfo(std::bit_cast<HyperRender::PointI>(m_newMousePos), std::bit_cast<HyperRender::PointI>(m_oldMousePos), m_isPressed, m_firstFrame);
     m_pEffectTool->Begin({0, 0, 0, 0});
-    m_pEffectTool->DoLiquify(std::bit_cast<HyperRender::PointI>(m_newMousePos), std::bit_cast<HyperRender::PointI>(m_oldMousePos), m_isPressed, m_firstFrame);
+    m_pEffectTool->DoRender();
     m_pEffectTool->End();
     m_pEffectTool->RenderToUnit(m_pScreenUnit);
 

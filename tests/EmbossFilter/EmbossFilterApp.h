@@ -7,9 +7,9 @@
 
 #include "app/Application.h"
 
-class LiquifyApp: public Application {
+class EmbossFilterApp: public Application {
 public:
-    LiquifyApp(int argc, char **argv);
+    EmbossFilterApp(int argc, char **argv);
 protected:
     void render() override;
     void mousePressEvent(const MousePressEvent &event) override;
@@ -17,15 +17,11 @@ protected:
     void mouseReleaseEvent(const MouseReleaseEvent &event) override;
 
 private:
-    Point m_oldMousePos;
-    Point m_newMousePos;
-    bool m_isPressed = false;
-    bool m_firstFrame = true;
     HyperRender::IDrawUnit* m_pScreenUnit = nullptr;
     HyperRender::IEffectTool* m_pEffectTool = nullptr;
     HyperRender::IDrawUnit* m_pTargetUnit = nullptr;
     HyperRender::IEffectFactory* m_pEffectFactory = nullptr;
-    HyperRender::ILiquifyEffect* m_pEffect = nullptr;
+    HyperRender::IEmbossFilter* m_pEffect = nullptr;
 };
 
 #endif //APP_H

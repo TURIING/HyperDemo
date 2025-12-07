@@ -1,3 +1,4 @@
 add_subdirectory(Liquify)
 add_subdirectory(Selection)
 add_subdirectory(EmbossFilter)
+add_subdirectory(GaussianBlur)

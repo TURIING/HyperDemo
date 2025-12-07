@@ -2,15 +2,15 @@
 // Created by turiing on 2025/11/21.
 //
 
-#include "EmbossFilterApp.h"
+#include "GaussianBlurApp.h"
 #include <iostream>
 
-EmbossFilterApp::EmbossFilterApp(int argc, char **argv): Application(argc, argv) {
+GaussianBlurApp::GaussianBlurApp(int argc, char **argv): Application(argc, argv) {
     m_pEffectTool = m_pToolFactory->CreateEffectTool();
     m_pEffectFactory = m_pEffectTool->CreateEffectFactory();
-    m_pEffect = m_pEffectFactory->CreateEmbossFilter();
+    m_pEffect = m_pEffectFactory->CreateGaussianBlur();
 
-    auto imageInfo = loadImage("/Users/turiing/Desktop/demo2.png");
+    auto imageInfo = loadImage("/Users/turiing/Desktop/demo.png");
     m_pTargetUnit = m_pEffectTool->CreateDrawUnit({0, 0, imageInfo.imageSize.width, imageInfo.imageSize.height});
     m_pEffectTool->FillDrawUnit(m_pTargetUnit, imageInfo.ptr, imageInfo.size, {0, 0});
     m_pEffectTool->SetTargetUnit(m_pTargetUnit);
@@ -20,8 +20,8 @@ EmbossFilterApp::EmbossFilterApp(int argc, char **argv): Application(argc, argv)
     m_pScreenTool->AddScreenObject(m_pScreenUnit);
 }
 
-void EmbossFilterApp::render() {
-    m_pEffect->SetEmbossInfo(270, 30, 3, false);
+void GaussianBlurApp::render() {
+    m_pEffect->SetBlurInfo(5);
     m_pEffectTool->Begin({0, 0, 0, 0});
     m_pEffectTool->DoRender();
     m_pEffectTool->End();
@@ -32,12 +32,12 @@ void EmbossFilterApp::render() {
     m_pScreenTool->End();
 }
 
-void EmbossFilterApp::mousePressEvent(const MousePressEvent &event) {
+void GaussianBlurApp::mousePressEvent(const MousePressEvent &event) {
     render();
 }
 
-void EmbossFilterApp::mouseMoveEvent(const MouseMoveEvent &event) {
+void GaussianBlurApp::mouseMoveEvent(const MouseMoveEvent &event) {
 }
 
-void EmbossFilterApp::mouseReleaseEvent(const MouseReleaseEvent &event) {
+void GaussianBlurApp::mouseReleaseEvent(const MouseReleaseEvent &event) {
 }
